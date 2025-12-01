@@ -15,49 +15,40 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//Se ejecuta por cada peticion, comprueba la validez (JwtTokenProvider) del token,
-//permite el acceso al recurso, en caso contrario, lanza una excepcion
-public class JwtAuthenticationFilter extends OncePerRequestFilter{
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired
-	public JwtTokenProvider jwtTokenProvider;
+	private JwtTokenProvider jwtTokenProvider;
 
 	@Autowired
-	public UserDetailsService jpaUserDetailsService;
+	private UserDetailsService jpaUserDetailsService;
 
-	// Realiza un filtro a las peticiones recibidas para determinar si poseen token
-	// y que acciones se deben realizar
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request,
+									HttpServletResponse response,
+									FilterChain filterChain) throws ServletException, IOException {
 
-		//obtenemos el token de la solicitud HTTP
-		String token = obtenerJWTdeLaSolicitud(request);
-		
-		//validamos el token
-		if(StringUtils.hasText(token) && jwtTokenProvider.validarToken(token)) {
-			//obtenemos el username del token
+		String token = obtenerTokenDeRequest(request);
+
+		if (StringUtils.hasText(token) && jwtTokenProvider.validarToken(token)) {
 			String username = jwtTokenProvider.obtenerUsernameDelJWT(token);
-			
-			//cargamos el usuario asociado al token
 			UserDetails userDetails = jpaUserDetailsService.loadUserByUsername(username);
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,userDetails.getAuthorities());
-			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			
-			//Se inicia el SecurityContextHolder
-			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+			UsernamePasswordAuthenticationToken authToken =
+					new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+			authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+			SecurityContextHolder.getContext().setAuthentication(authToken);
 		}
 
-		//Continua con la cadena de ejecucion
 		filterChain.doFilter(request, response);
 	}
 
-	//Bearer <token de acceso>
-	private String obtenerJWTdeLaSolicitud(HttpServletRequest request) {
+	private String obtenerTokenDeRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
 
-		if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-			return bearerToken.substring(7,bearerToken.length());
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7);
 		}
 
 		return null;

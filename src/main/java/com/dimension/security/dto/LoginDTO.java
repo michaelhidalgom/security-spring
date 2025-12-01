@@ -2,14 +2,14 @@ package com.dimension.security.dto;
 
 public class LoginDTO {
 
-	private String email;  // ← Cambiar de username a email
+	private String email;
 	private String password;
 
-	public String getEmail() {  // ← Cambiar getter
+	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {  // ← Cambiar setter
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
