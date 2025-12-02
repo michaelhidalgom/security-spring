@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "f6464188-b59d-4b16-af2b-12414e973234",
+		"name": "autenticacion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7506629",
+		"_collection_link": "https://orange-space-308910.postman.co/workspace/React~3b6d44da-3b39-487b-a9e8-8ac3d41902a4/collection/7506629-f6464188-b59d-4b16-af2b-12414e973234?action=share&source=collection_link&creator=7506629"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"luis@gmail.com\",\r\n    \"password\": \"luis123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
